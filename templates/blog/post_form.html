@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}Create Post{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .blog-post-form {
+      border: 1px solid #cacaca;
+      padding: 1rem;
+      border-radius: 0;
+    }
+    .error{
+      color: red;
+      margin-bottom: 1rem;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="row align-middle">
+<div class="small-12 medium-8 large-8 columns">
+  <form class="blog-post-form" method="post">
+    <h2>Create A Blog Post</h2>
+
+    <label>Title
+      <input type="text" placeholder="" name="subject" value="{{title}}">
+      <small class="error">{{error_title}}</small>
+    </label>
+
+    <label>Content
+      <textarea placeholder="" name="content" rows="10">{{body}}</textarea>
+      <small class="error">{{error_body}}</small>
+    </label>
+	<p class="error">{{error}}</p>
+   	<div class="button-group">
+    	<button class="button " type="submit">Submit</button>
+    	<button class="secondary button" type="submit">Cancel</button>
+    </div>
+  </form>
+</div>
+</div>
+
+{% endblock %}

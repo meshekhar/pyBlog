@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block title %}Signup{% endblock %}
+{% block head %}
+  {{ super() }}
+  <style type="text/css">
+    .log-in-form {
+      border: 1px solid #cacaca;
+      padding: 1rem;
+      border-radius: 0;
+    }
+    .error{
+      color: red;
+      margin-bottom: 1rem;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<div class="row align-middle">
+<div class="small-12 medium-6 large-4 small-centered large-centered columns">
+  <form class="log-in-form" method="post">
+    <h4 class="text-center">Create Your Account</h4>
+
+    <label>Username
+      <input type="text" placeholder="Username" name="username" value="{{username}}">
+      <small class="error">{{username_exist_error}}</small>
+      <small class="error">{{error_username}}</small>
+    </label>
+
+    <label>Password
+      <input type="text" placeholder="Password" name="password" value="">
+      <small class="error">{{error_password}}</small>
+    </label>
+
+    <label> Verify Password
+      <input type="text" placeholder="Verify Password" name="verify" value="">
+      <small class="error">{{error_verify}}</small>
+    </label>
+
+    <label> Email
+      <input type="text" placeholder="Email (Optional)" name="email" value="{{email}}">
+      <small class="error">{{error_email}}</small>
+    </label>
+
+    <p><button class="button expanded" type="submit">SIGN UP</button></p>
+    <p class="text-center"><a href="#">Forgot your password?</a></p>
+  </form>
+</div>
+</div>
+
+{% endblock %}

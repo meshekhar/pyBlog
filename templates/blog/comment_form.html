@@ -1,0 +1,16 @@
+
+<div class="small-12 medium-12 large-12 columns">
+  <form class="blog-post-form" 
+  		method="post" 
+  		action="/blog/{{post.key.id()}}/comment/newcomment" 
+  		onsubmit="return validateForm()" 
+  		name="commentForm">
+  	
+  	<p class="comment-error" id="error_body"></p>
+    <label>Add Your Comment:
+      	<textarea placeholder="" name="body" rows="6"></textarea>
+    </label>
+    <button class="button" id="comment-btn" type="submit">Save</button>
+    <a href="/blog/{{post.key.id()}}" class="secondary button">Cancel</a>    
+  </form>
+</div>

@@ -1,0 +1,53 @@
+@CHARSET "UTF-8";
+
+.top-bar {
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    background: #121212;
+    font-size: 0.8125rem;
+    font-weight: bold;
+    z-index: 2;
+    position: relative;
+}
+
+.top-bar ul {
+    background-color: #ccc;
+}
+
+.title{
+	color: white;
+	font-size:1rem;
+	Text-Transform: uppercase;
+}
+
+.post-meta-hr{
+	border: 0.1rem solid #bdc3c7;
+}
+.style1 {
+    font-size: 36px;
+    color: #bdc3c7;
+    cursor: pointer; 
+    line-height: 1;
+    
+}
+
+.like{
+	display: inline-block;
+	float: left;
+	margin-right: 2rem;
+}
+
+.stat{
+	color:#bdc3c7;
+}
+
+.comment-hr{
+	border: 1px dotted #B3B3B3
+}
+.callout{
+	border: 1px solid rgba(10, 10, 10, 0.1);
+}
+
+.comment-error{
+	color: red;
+}

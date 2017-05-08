@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}Show Post{% endblock %}
+{% block head %}
+  {{ super() }}
+
+<script>
+function validateForm() {
+    var commentVal = document.forms["commentForm"]["body"].value;
+    if (commentVal == "") {
+    	document.getElementById("error_body").innerHTML = "Comment must be filled out";
+        return false;
+    }
+}
+</script>
+
+{% endblock %}
+
+{% block content %}
+<div class="row align-middle">
+	<div class="small-12 medium-12 large-10 large-centered columns">
+    	
+    	<div class="row columns">    	
+	    	<div class="like">
+				<a class="fi-like style1" href="/blog/{{post.key.id()}}/vote/like"></a>
+				<div class="stat">{% if post.likes %} {{post.likes}} {% else %} 0 {% endif %}</div>
+				<a class="fi-dislike style1" href="/blog/{{post.key.id()}}/vote/dislike"></a>
+		    </div>
+		    
+	    	<h2>{{post.title}}</h2>    	
+			<h6 class="subheader">
+				Posted By: {{post.author_id.get().username}} |
+				Dated : {{post.created.strftime('%Y-%m-%d') }} |
+				<a href="/blog/{{post.key.id()}}/edit">Edit</a> |
+				<a href="/blog/{{post.key.id()}}/delete">Delete</a></h6>	    	    
+	    </div>
+	    
+    	<hr class="post-meta-hr">
+    	<p class="lead">{{post.body | nl2br }}</p>
+    	<div class="vote text-align-right">    		
+		</div>		
+		<h3 class="subheader">Comments:</h3>
+		{% if post.comments %}
+			{% for comment in post.comments %}
+				<div class="callout ">
+  				<small>By: {{comment.get().author_id.get().username}} | </small>
+				<small> on : {{comment.get().created.strftime('%Y-%m-%d') }} | </small>
+				<small><a href="/blog/{{post.key.id()}}/edit">Edit</a> | </small>    
+				<small><a href="/blog/{{post.key.id()}}/edit">Delete</a> </small>
+				<p>{{comment.get().body | nl2br }}</p>
+				</div>
+			{% endfor%}
+		{% endif%}
+	</div>
+</div>
+<div class="row align-middle">
+	<div class="small-12 medium-12 large-6 large-offset-1 columns">
+		{% include "comment_form.html" %}    	
+	</div>
+</div>
+{% endblock %}

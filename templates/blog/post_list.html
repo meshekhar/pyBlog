@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}Show Post{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+<div class="row align-middle">
+	<div class="small-12 medium-12 large-10 large-centered columns">
+
+	{% if not posts%} <h1>No Blogs Yet.</h1>{% endif %}
+	
+	{% for post in posts %}
+        <h4><a href="/blog/{{post.key.id()}}">{{post.title}}</a></h4>
+        <small>Posted By: <b>{{post.author_id.get().username}} </b></small> |
+    	<small>Date: {{post.created.strftime('%Y-%m-%d') }}</small>
+    	<p>{{post.body | truncate(200)}}</p>
+		<hr>
+    {% endfor %}
+    
+	</div>
+</div>
+
+{% endblock %}

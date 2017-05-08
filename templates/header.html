@@ -1,0 +1,29 @@
+<!-- Top bar site navigation -->
+
+<div class="row">
+<div class="top-bar">
+ <div class="top-bar-title">
+    <a href="/blog" class="title"><strong>Blog</strong></a>
+  </div>
+  <div class="top-bar-title"></div>
+  <div>
+    <div class="top-bar-left">
+      <ul class="menu">
+        <li><a class="button" href="/blog/newpost">New Post</a></li>
+      </ul>
+    
+    </div>
+    <div class="top-bar-right">
+        <ul class="menu">        
+        {% if user %}<!-- if logged in show logout and user page -->
+        	<li><a href="/blog/user/{{user.username}}">Hwdy {{user.username}}</a></li>
+        	<li><a class="button secondary" href="/blog/logout">Logout</a></li>
+        {% else %} <!-- else show login and register nav -->
+        	<li><a class="button" href="/blog/signup">Signup</a></li>
+        	<li><a class="button" href="/blog/login">Login</a></li>
+     	{% endif %}
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
