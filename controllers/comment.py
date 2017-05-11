@@ -70,6 +70,7 @@ class EditCommentHandler(BaseHandler):
             
         if not self.user:
             self.redirect('/blog/login')
+            return
         elif comment_user_id == self.user.key.id() :
             self.render_response('post_comment_edit.html', post=post, comment=comment)
         else:
@@ -79,6 +80,11 @@ class EditCommentHandler(BaseHandler):
             
     
     def post(self, post_id, comment_id):
+        
+        # User login check
+        if not self.user:
+            self.redirect('/blog/login')
+            return
         
         # get the title and body from form
         body = self.request.get('body')
@@ -100,18 +106,21 @@ class EditCommentHandler(BaseHandler):
         # form validation
         # if not body: not working therefore isalnum() func used.
         # Needs to be checked in follow-up
+        
         if not body.isalnum():
             params['error_body'] = "That's not a valid comment."
             self.render_response('post_comment_edit.html', post=post, comment=comment, **params)
         else:
             # update the post object and put
             comment_to_edit = Comment.get_by_id(int(comment_id))  # or ndb.Key(Job, job_id).get()
-
-            comment_to_edit.body = body
-            comment_to_edit.put()
-            self.session.add_flash('Your comment has been updated.', 'success')
-            self.redirect('/blog/%s' % post_id, str(post_id))
-
+            
+            if comment_to_edit:
+                comment_to_edit.body = body
+                comment_to_edit.put()
+                self.session.add_flash('Your comment has been updated.', 'success')
+                self.redirect('/blog/%s' % post_id, str(post_id))
+            return
+                
 
 class DeleteCommentHandler(BaseHandler):
     """
@@ -129,6 +138,8 @@ class DeleteCommentHandler(BaseHandler):
         
         if not self.user:
             self.redirect('/blog/login')
+            return
+        
         elif comment_user_id == self.user.key.id() :
             # if the logged in user is same as post author then 
             # continue to delete the post            
@@ -142,11 +153,16 @@ class DeleteCommentHandler(BaseHandler):
             # update post on db
             post.put()
             
-            # delete comment from db
-            comment.key.delete()
+            comment = Comment.get_by_id(int(comment_id))
             
-            self.session.add_flash('Your comment has been deleted.', 'success')
-            self.redirect("/blog/%s" % post_id)
+            # delete comment from db
+            if comment:
+                comment.key.delete()            
+                self.session.add_flash('Your comment has been deleted.', 'success')
+                self.redirect("/blog/%s" % post_id)
+            else:
+                self.session.add_flash('Can not delete comment at this time. try again!', 'warning')
+                self.redirect("/blog/%s" % post_id)
         else:
             # show flash msg that user can only edit own comment.
             self.session.add_flash('You can not DELETE others comment.', 'alert')

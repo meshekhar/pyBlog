@@ -84,6 +84,7 @@ class PostEditHandler(BaseHandler):
         # if user logged in
         if not self.user:
             self.redirect("/blog/login")
+            return
         
         # check if logged in user is same as post author 
         # and render edit form
@@ -97,6 +98,10 @@ class PostEditHandler(BaseHandler):
     
     def post(self, post_id):
         
+        # if user logged in
+        if not self.user:
+            self.redirect("/blog/login")
+            
         # get the title and body from form
         title = self.request.get('title')
         body = self.request.get('body')
@@ -135,13 +140,20 @@ class PostDeleteHandler(BaseHandler):
         
         if not self.user:
             self.redirect("/blog/login")
+            return
+            
         elif post_user_id == self.user.key.id():
             # if the logged in user is same as post author then 
             # continue to delete the post
-            post.key.delete()
-            self.session.add_flash('Your post has been deleted.', 'success')
-            self.redirect('/blog')
-            return
+            if post is not None:
+                post.key.delete()
+                self.session.add_flash('Your post has been deleted.', 'success')
+                self.redirect('/blog')
+                return
+            else:
+                self.session.add_flash('Your post can not be deleted.', 'warning')
+                self.redirect("/blog/%s" % post_id)
+                return
         else:
             self.session.add_flash('You can not delete others post.', 'alert')
             self.redirect("/blog/%s" % post_id)
