@@ -11,8 +11,7 @@ Application uses Python 2.7, Jinja2, Webapp2 and webapp2 extra, google datastore
 * [App Engine][1]
 
 ## Installation
-* 'git clone <repository-url>' this repository
-* or download the repository
+* 'git clone <repository-url>' this repository or download the zip file
 * open app engine
 * add the directory as existing project
 * run
