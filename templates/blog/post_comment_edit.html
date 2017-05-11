@@ -37,30 +37,14 @@ function validateForm() {
 	    
     	<hr class="post-meta-hr">
     	<p class="lead">{{post.body | nl2br }}</p>
-    	<div class="vote text-align-right">    		
-		</div>		
-		<h3 class="subheader">Comments:</h3>
-		{% if post.comments %}
-			{% for comment in post.comments %}
-				<div class="callout ">
-  				<small>By: {{comment.get().author_id.get().username}} | </small>
-				<small> on : {{comment.get().created.strftime('%Y-%m-%d') }} | </small>
-				<small><a href="/blog/{{post.key.id()}}/comment/{{comment.get().key.id()}}/update">Edit</a> | </small>    
-				<small><a href="/blog/{{post.key.id()}}/comment/{{comment.get().key.id()}}/delete">Delete</a> </small>
-				<p>{{comment.get().body | nl2br }}</p>
-				</div>
-			{% endfor%}
-		{% endif%}
+    	<br>	
 	</div>
 </div>
 
 <div class="row align-middle">
 	<div class="small-12 medium-12 large-6 large-offset-1 columns">
-	{% if user %}
-		{% include "comment_form.html" %}
-	{% else %}
-		<a href="/blog/login">Login</a> or <a href="/blog/signup">Signup</a> to Comment.
-	{% endif %}
+		<h3 class="subheader">Edit Comment:</h3>
+		{% include "comment_edit_form.html" %}    	
 	</div>
 </div>
 

@@ -28,9 +28,9 @@ _route_info = [
   ('blog.edit',  None,    r'/blog/<post_id:\d+>/edit', 'controllers.blog.PostEditHandler'),
   ('blog.delete',  None,  r'/blog/<post_id:\d+>/delete', 'controllers.blog.PostDeleteHandler'),
   
-  ('blog.comment.create',  None,   r'/blog/<post_id:\d+>/comment/newcomment', 'controllers.blog.PostCommentHandler'),
-  ('blog.comment.update',  None,   r'/blog/<post_id:\d+>/comment/<comment_id:\d+>/update', 'controllers.blog.PostCommentHandler'),
-  ('blog.comment.delete',  None,   r'/blog/<post_id:\d+>/comment/<comment_id:\d+>delete', 'controllers.blog.PostCommentHandler'),
+  ('blog.comment.create',  None,   r'/blog/<post_id:\d+>/comment/newcomment', 'controllers.comment.CreateCommentHandler'),
+  ('blog.comment.update',  None,   r'/blog/<post_id:\d+>/comment/<comment_id:\d+>/update', 'controllers.comment.EditCommentHandler'),
+  ('blog.comment.delete',  None,   r'/blog/<post_id:\d+>/comment/<comment_id:\d+>/delete', 'controllers.comment.DeleteCommentHandler'),
   
   ('blog.like',  None,   r'/blog/<post_id:\d+>/vote/<vote_val:(like|dislike)>', 'controllers.blog.PostLikeHandler')]
 

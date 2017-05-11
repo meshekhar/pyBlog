@@ -75,12 +75,6 @@ class PostEditHandler(BaseHandler):
 
     def get(self, post_id):
         
-        # initialize user object
-        user = None
-        if self.request.cookies.get('site_token'):
-            # call checktoken method to get the user object
-            user = User.checkToken(self.request.cookies.get('site_token'))
-        
         # get post object
         post = Post.get_by_id(int(post_id))
         
@@ -88,7 +82,7 @@ class PostEditHandler(BaseHandler):
         post_user_id = post.author_id.get().key.id()
         
         # if user logged in
-        if not user:
+        if not self.user:
             self.redirect("/blog/login")
         
         # check if logged in user is same as post author 
@@ -147,9 +141,11 @@ class PostDeleteHandler(BaseHandler):
             post.key.delete()
             self.session.add_flash('Your post has been deleted.', 'success')
             self.redirect('/blog')
+            return
         else:
             self.session.add_flash('You can not delete others post.', 'alert')
             self.redirect("/blog/%s" % post_id)
+            return
 
 
 class PostShowHandler(BaseHandler):
@@ -160,6 +156,7 @@ class PostShowHandler(BaseHandler):
         post = Post.query_post(post_id)        
         self.render_response('post_show.html', post = post, **params)          
 
+
 class PostListHandler(BaseHandler):
     """
         handler for showing post list page
@@ -168,46 +165,6 @@ class PostListHandler(BaseHandler):
         # posts = Post.all()
         posts = Post.query().fetch(10)
         self.render_response('post_list.html', posts=posts)          
-
-
-class PostCommentHandler(BaseHandler):
-    """
-        handler for adding comment on post
-    """
-    def post(self, post_id):
-        
-        u_key = None
-        
-        if not self.user:
-            self.redirect('/blog/login')
-            return
-        else:
-            # Get the logged in user reference key
-            u_key = ndb.Key(User, self.user.key.id())
-        
-        body = self.request.get('body')
-        
-        # Retrive the post object 
-        post = Post.query_post(post_id)
-        
-        params = dict()
-        if not body:
-            # if body empty then respond with error msg
-            params['error'] = "Comment can not be empty."
-            self.render_response('post_show.html', post=post, **params)
-        else:
-            # create a comment object
-            new_comment = Comment(body=body, author_id=u_key)
-            
-            # add comment abject to the database
-            comment_key = new_comment.put()
-            
-            # append comment key to the post object
-            post.comments.append(comment_key)
-            
-            # put the post abject to the databse
-            post.put()            
-            self.redirect('/blog/%s' % post_id)   
 
 
 class PostLikeHandler(BaseHandler):
@@ -258,3 +215,4 @@ class PostLikeHandler(BaseHandler):
 
         # params = dict(error="can not do it")
         self.redirect('/blog/%s' % post_id)   
+

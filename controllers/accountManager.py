@@ -84,9 +84,9 @@ class LoginHandler(BaseHandler):
                 self.render_response('login.html', **params)            
             else:
                 self.user = user
-                self.response.set_cookie('site_token', str(self.user.key.id()))
+                self.set_secure_cookie('site_token', str(self.user.key.id()))
                 self.session.add_flash('Welcome back %s' %username, 'success')                
-                self.redirect('/blog')    
+                self.redirect('/blog')
 
 
 class LogoutHandler(BaseHandler):
@@ -94,11 +94,12 @@ class LogoutHandler(BaseHandler):
     # delete cookie
     # and flash msg that user is loged out
     
-    def get(self):
-        self.response.delete_cookie('site_token')
+    def get(self):        
+        #self.response.delete_cookie('site_token')
+        self.response.headers.add_header('Set-Cookie', 'site_token=; Path=/')        
         self.session.add_flash('Your are succesfuly logged out!', 'success')
         self.user = None
-        self.redirect('/')
+        self.redirect('/blog')
         
 
 class SignupHandler(BaseHandler):
@@ -162,8 +163,8 @@ class SignupHandler(BaseHandler):
                 u.password = u.setPassword(password)                
                 u.put()
                 
-                # set site cookie
-                self.response.set_cookie('site_token', str(u.key.id()))
+                # set site secure cookie
+                self.set_secure_cookie('site_token', str(u.key.id()))                
                 
                 # show falsh welcome message
                 self.session.add_flash("Thankyou for signup %s" %username, level='success', key='_flash')

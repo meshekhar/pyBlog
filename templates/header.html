@@ -16,7 +16,7 @@
     <div class="top-bar-right">
         <ul class="menu">        
         {% if user %}<!-- if logged in show logout and user page -->
-        	<li><a href="/blog/user/{{user.username}}">Hwdy {{user.username}}</a></li>
+        	<li><a href="#">Hwdy {{user.username}}</a></li>
         	<li><a class="button secondary" href="/blog/logout">Logout</a></li>
         {% else %} <!-- else show login and register nav -->
         	<li><a class="button" href="/blog/signup">Signup</a></li>
