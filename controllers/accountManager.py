@@ -9,38 +9,40 @@ Module handles the login, logout and registration
 
 from controllers.base import BaseHandler
 from models.user import User
-from models.post import Post
+
 from utils import validate as vl
 
+#===============================================================================
+# # login check decorator
+# def login_required(func):
+# 
+#     def decorated(*args, **kwargs):
+#         if args[0].request.method != 'GET':
+#             args[0].abort(400,
+#                           detail='The login_required decorator '
+#                           'can only be used for GET requests.')
+#         if not args[0].user:
+#             args[0].redirect("/blog/login")
+#         return func(*args, **kwargs)
+# 
+#     return decorated
+# 
+# 
+# # post author check decorator
+# def isAuthor(func):
+# 
+#     def decorated(*args, **kwargs):
+# 
+#         post = Post.get_by_id(int(kwargs.get('post_id')))
+#         post_user_id = post.author_id.get().key.id()
+# 
+#         if post_user_id != args[0].user.key.id():
+#             args[0].redirect("/blog/%s" % kwargs.get('post_id'))
+#         return func(*args, **kwargs)
+# 
+#     return decorated
+#===============================================================================
 
-# login check decorator
-def login_required(func):
-    
-    def decorated(*args, **kwargs):
-        if args[0].request.method != 'GET':
-            args[0].abort(400,
-                        detail='The login_required decorator '
-                               'can only be used for GET requests.')
-        if not args[0].user:
-            args[0].redirect("/blog/login")
-        return func(*args, **kwargs)
-
-    return decorated
-
-
-# post author check decorator
-def isAuthor(func):
-    
-    def decorated(*args, **kwargs):
-
-        post = Post.get_by_id(int(kwargs.get('post_id')))
-        post_user_id = post.author_id.get().key.id()
-        
-        if post_user_id != args[0].user.key.id():
-            args[0].redirect("/blog/%s" % kwargs.get('post_id'))
-        return func(*args, **kwargs)
-
-    return decorated
 
 class LoginHandler(BaseHandler):
     """
@@ -48,44 +50,45 @@ class LoginHandler(BaseHandler):
         if user not login then it will render login page
         otherwise redirected to home page 
     """
+
     def get(self):
         if not self.user:
             self.render_response('login.html')
         else:
             self.redirect('/home')
-    
+
     # login post method
     # user input are validated and checked agained the database
-    # 
+    #
     def post(self):
-        
+
         if not self.user:
             params = dict(login_error="login error")
-        
+
             username = self.request.get('username')
             password = self.request.get('password')
-            
+
             if not username and not password:
                 self.render_response('login.html', **params)
                 return
-            
+
             user = User.query(User.username == username).get()
-            
+
             if not user:
                 self.render_response('login.html', **params)
                 return
-            
-            
+
             # check if the username and password match with existing record
             # if not then http 403 forbidden error set and redirect to the login page
-            # else user object set, cookie added, and flash msg to on welcome page
+            # else user object set, cookie added, and flash msg to on welcome
+            # page
             if not User.checkPassword(user.password, password):
                 self.error(403)
-                self.render_response('login.html', **params)            
+                self.render_response('login.html', **params)
             else:
                 self.user = user
                 self.set_secure_cookie('site_token', str(self.user.key.id()))
-                self.session.add_flash('Welcome back %s' %username, 'success')                
+                self.session.add_flash('Welcome back %s' % username, 'success')
                 self.redirect('/blog')
 
 
@@ -93,14 +96,14 @@ class LogoutHandler(BaseHandler):
     """ Logout handler """
     # delete cookie
     # and flash msg that user is loged out
-    
-    def get(self):        
+
+    def get(self):
         #self.response.delete_cookie('site_token')
-        self.response.headers.add_header('Set-Cookie', 'site_token=; Path=/')        
+        self.response.headers.add_header('Set-Cookie', 'site_token=; Path=/')
         self.session.add_flash('Your are succesfuly logged out!', 'success')
         self.user = None
         self.redirect('/blog')
-        
+
 
 class SignupHandler(BaseHandler):
     '''
@@ -115,19 +118,18 @@ class SignupHandler(BaseHandler):
             self.redirect('/blog')
         else:
             self.render_response('signup.html')
-    
-    
+
     def post(self):
         have_error = False
-        
+
         username = self.request.get('username')
         password = self.request.get('password')
         verify = self.request.get('verify')
         email = self.request.get('email')
 
         params = dict(username=username, email=email)
-        
-        # do form validation 
+
+        # do form validation
         if not vl.valid_username(username):
             params['error_username'] = "That's not a valid username."
             have_error = True
@@ -149,7 +151,7 @@ class SignupHandler(BaseHandler):
         else:
             # check for if username exits
             user = User.query(User.username == username).get()
-            
+
             if user:
                 # username exist error
                 params['username_exist_error'] = "Username already taken, please choose a different one"
@@ -160,14 +162,15 @@ class SignupHandler(BaseHandler):
                 u = User()
                 u.username = username
                 u.email = email
-                u.password = u.setPassword(password)                
+                u.password = u.setPassword(password)
                 u.put()
-                
+
                 # set site secure cookie
-                self.set_secure_cookie('site_token', str(u.key.id()))                
-                
+                self.set_secure_cookie('site_token', str(u.key.id()))
+
                 # show falsh welcome message
-                self.session.add_flash("Thankyou for signup %s" %username, level='success', key='_flash')
-                
+                self.session.add_flash(
+                    "Thankyou for signup %s" % username, level='success', key='_flash')
+
                 # redirect to the blog page
                 self.redirect('/blog')

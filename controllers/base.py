@@ -18,23 +18,23 @@ class BaseHandler(webapp2.RequestHandler):
     """
         Class for handling jinja2 templates and entry point for the app
     """
-    
+
     # initialize method for overriding the webapp2.RequestHandler.__init__() method.
     # attributes are current request, response and app objects
     def initialize(self, *a, **kw):
         webapp2.RequestHandler.initialize(self, *a, **kw)
-        
+
         uid = self.read_secure_cookie('site_token')
-        
+
         self.user = uid and User.by_id(int(uid))
 
-        #=======================================================================
+        #======================================================================
         # if not self.request.cookies.get('site_token') == None:
         #     self.user = User.checkToken(self.request.cookies.get('site_token'))
         # else:
         #     self.user = None
-        #=======================================================================
-    
+        #======================================================================
+
     def dispatch(self):
         # Get a session store for this request.
         self.session_store = sessions.get_store(request=self.request)
@@ -46,21 +46,18 @@ class BaseHandler(webapp2.RequestHandler):
             # Save all sessions.
             self.session_store.save_sessions(self.response)
 
-
     @webapp2.cached_property
     def session(self):
         # Returns a session using the default cookie key.
         return self.session_store.get_session()
-    
-    
+
     @webapp2.cached_property
     def jinja2(self):
         # Returns a Jinja2 renderer cached in the app registry.
         return jinja2.get_jinja2(app=self.app)
 
-
     def render_response(self, _template, **context):
-        
+
         # Renders a template and writes the result to the response.
         # set logged in user to the session
         # set flash message
@@ -71,9 +68,8 @@ class BaseHandler(webapp2.RequestHandler):
         }
         ctx.update(context)
         rv = self.jinja2.render_template(_template, **ctx)
-        
-        self.response.write(rv)
 
+        self.response.write(rv)
 
     # sets a cookie whose name is name and value is val
     def set_secure_cookie(self, name, val):
@@ -84,17 +80,15 @@ class BaseHandler(webapp2.RequestHandler):
         self.response.headers.add_header(
             'Set-Cookie',
             '%s=%s; Path=/' % (name, cookie_val))
-        
 
     def read_secure_cookie(self, name):
         # find the cookie in the request
         cookie_val = self.request.cookies.get(name)
         return cookie_val and check_hash_strg(cookie_val)
 
-
-    # method shows error (e.g. 404) when any of the classes inherited 
-    # has error, such as wrong post id number which will pass the url 
-    # regex test but will get a document 
+    # method shows error (e.g. 404) when any of the classes inherited
+    # has error, such as wrong post id number which will pass the url
+    # regex test but will get a document
     def handle_exception(self, exception, debug):
         # Log the error.
         logging.exception(exception)

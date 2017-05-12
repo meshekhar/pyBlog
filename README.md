@@ -2,7 +2,7 @@
 
 pyBlog is a Python Based Blogging Application runs on google app engine and uses google cloud datastore DB.
 
-A live App Engine Application can be accessed at follwoing url:
+A live AppEngine Application can be accessed at following URL:
 
 https://ublog2018.appspot.com/blog
 
